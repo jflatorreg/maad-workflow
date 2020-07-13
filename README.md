@@ -3,7 +3,7 @@ MAAD's Work Flux are the steps to follow (scripts) to perform automatic classifi
 
 ## Installation
 
-Use the package manager [pip](https://pip.pypa.io/en/stable/) to install foobar.
+Use the package manager [pip](https://pip.pypa.io/en/stable/) to install MAAD library.
 
 ```bash
 pip install upgrade -i https://test.pypi.org/simple/scikit-maad
@@ -12,17 +12,16 @@ pip install upgrade -i https://test.pypi.org/simple/scikit-maad
 ## Usage
 
 ```python
-import foobar
+from maad.rois import find_rois_cwt
+from maad import sound
 
-foobar.pluralize('word') # returns 'words'
-foobar.pluralize('goose') # returns 'geese'
-foobar.singularize('phenomena') # returns 'phenomenon'
+s, fs = sound.load('./templates/BETA-_20161006_002000_section.wav')
+rois = find_rois_cwt(s, fs, 
+                     flims = (1000,4000), 
+                     tlen = 0.3, 
+                     th = 0.0001, 
+                     display=True, figsize=(13,6))
 ```
-
-## Contributing
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
-
-Please make sure to update tests as appropriate.
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
