@@ -29,7 +29,7 @@ rois = find_rois_cwt(s, fs,
 
 ## Author
 
-This work was developed by **Juan Felipe Latorre Gil**, you can contact me by [email](mailto:jflatorre@unal.edu.co): <jflatorreg@unal.edu.co> or [git](https://github.com/jflatorreg).
+Developed by **Juan Felipe Latorre Gil**, you can contact me by [email](mailto:jflatorre@unal.edu.co): <jflatorreg@unal.edu.co> or [git](https://github.com/jflatorreg).
 
 This work was based on the preliminary work of the **MAAD** method carried out by [Juan Sebastián Ulloa Chacón](mailto:julloa@humboldt.org.co) (<julloa@humboldt.org.co>). Thanks for the help.
 
