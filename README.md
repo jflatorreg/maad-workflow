@@ -1,5 +1,5 @@
 # MAAD Work Flux
-MAAD's Work Flux are the steps to follow (scripts) to perform automatic classification of sounds of interest. These steps are based on the **MAAD** method.
+MAAD's Work Flux are the steps (scripts) to follow to perform automatic classification of sounds of interest. These steps are based on the **MAAD** method.
 
 ## Installation
 
