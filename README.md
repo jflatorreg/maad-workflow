@@ -27,7 +27,7 @@ rois = find_rois_cwt(s, fs,
 
 ![Alt text](Example/Example.png?raw=true "Title")
 
-## The author
+## Author
 
 This work was developed by **Juan Felipe Latorre Gil**, you can contact me by [email](mailto:jflatorre@unal.edu.co): <jflatorreg@unal.edu.co> or [git](https://github.com/jflatorreg).
 
