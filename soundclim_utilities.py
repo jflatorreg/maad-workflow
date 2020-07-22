@@ -114,6 +114,54 @@ def batch_find_rois(flist, params_detections, path_audio):
     return info_detections
 
 
+def batch_find_rois_no_verb(flist, params_detections, path_audio):
+    """
+    Exports features saved as joblib into a csv file readable by R and other 
+    programs. The joblib file should be computed using the 
+    
+    Parameters:
+    ----------
+        params_detection: dict
+            Dictionary with the basic parameters to feed find_rois: 
+            'flims', 'tlen', and 'th'.
+        path_flist : str
+            Path to a *.txt file with the list of audio filenames to process
+        path_audio : str
+            Path to the place were the dataset of audio files are stored
+
+    Returns:
+    -------
+        Saves a joblib file to disk. Does not return any variable
+            
+    """    
+    # load parameters
+    flims = params_detections['flims']
+    tlen = params_detections['tlen']
+    th = params_detections['th']
+    
+    detections = list()
+    for idx, fname in enumerate(flist['fname']):
+        #print(idx+1, '/', len(flist), fname)
+        s, fs = sound.load(path_audio+fname)
+        rois = find_rois_cwt(s, fs, flims, tlen, th)
+        if not rois.empty:    
+            # filter rois shorter than 25% of tlen
+            idx_rm = (rois.max_t - rois.min_t) < tlen*0.25
+            rois.drop(index=np.where(idx_rm)[0], inplace=True)
+            rois.reset_index(inplace=True, drop=True)
+        else:
+            pass
+        # save to list
+        detections.append({'fname':fname, 'rois':rois})
+    
+    info_detections = {'detections': detections, 'parameters': params_detections}
+    return info_detections
+
+
+
+
+
+
 def joblib_features_to_csv(path_data, path_save):
     """
     Exports features saved as joblib into a csv file readable by R and other 
@@ -260,6 +308,100 @@ def batch_feature_rois(rois_list, params_features, path_audio):
                      'opt_shape': opt_shape,
                      'opt_spectro': opt_spec}
     return info_features
+
+
+
+
+
+
+def batch_feature_rois_no_verb(rois_list, params_features, path_audio):
+    """
+    Computes features for a list of files
+    
+    Parameters:
+    ----------
+        params_features: dict
+            Dictionary with the basic parameters to feed find_rois: 
+            'flims', 'tlen', and 'th'.
+        path_flist : str
+            Path to a *.txt file with the list of audio filenames to process
+        path_audio : str
+            Path to the place were the dataset of audio files are stored
+        path_save : str
+            Path with the file name to save the csv
+
+    Returns:
+    -------
+        info_features: dic
+            Dictionary with features and all the parameters used to compute the features.
+            Included keys: features, parameters_df, opt_shape, opt_spectro
+            
+    """    
+    ## TODO: when the time limits are too short, the function has problems
+    # load parameters
+    flims = params_features['flims']
+    opt_spec = params_features['opt_spec']
+    opt_shape = opt_shape_presets(params_features['opt_shape_str'])
+
+    # load detection data
+    
+    features = []
+    for idx, file in enumerate(rois_list):   
+        # unpack file values
+        fname = file['fname']
+        rois_tf = file['rois']
+        #print(idx+1, '/', len(rois_list), fname)    
+        
+        if rois_tf.empty:
+            #print('< No detection on file >')
+            features.append({'fname':fname, 'features': pd.DataFrame()})
+        else:
+            # load materials: sound, spectrogram
+            s, fs = sound.load(path_audio+fname)
+            im, dt, df, ext = sound.spectrogram(s, fs, nperseg=opt_spec['nperseg'], 
+                                                overlap=opt_spec['overlap'], fcrop=flims, 
+                                                rescale=False, db_range=opt_spec['db_range'])
+            
+            # format rois to bbox
+            ts = np.arange(ext[0], ext[1], dt)
+            f = np.arange(ext[2],ext[3]+df,df)
+            rois_bbox = format_rois(rois_tf, ts, f, fmt='bbox')
+                
+            # roi to image blob
+            im_blobs = rois_to_imblobs(np.zeros(im.shape), rois_bbox)
+            
+            # get features: shape, center frequency
+            im = normalize_2d(im, 0, 1)
+            bbox, params, shape = shape_features(im, im_blobs, resolution='custom', 
+                                                 opt_shape=opt_shape)
+            _, cent = centroid(im, im_blobs)
+            cent['frequency']= f[round(cent.y).astype(int)]  # y values to frequency
+            
+            # format rois to time-frequency
+            rois_out = format_rois(bbox, ts, f, fmt='tf')
+            
+            # combine into a single df
+            aux_df = pd.concat([rois_out, shape, cent.frequency], axis=1)
+            #        aux_df['fname'] = fname
+            features.append({'fname':fname, 'features': aux_df})
+    
+    
+    # Arranges the data into a dictionary
+    info_features = {'features': features,
+                     'parameters_df': params,
+                     'opt_shape': opt_shape,
+                     'opt_spectro': opt_spec}
+    return info_features
+
+
+
+
+
+
+
+
+
+
 
 
 def batch_predict_rois(flist, tuned_clfs, params, path_audio_db='./'):
