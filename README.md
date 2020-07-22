@@ -1,4 +1,4 @@
-# MAAD Work Flux
+# MAAD Workflow
 MAAD's Work Flux are the steps (scripts) to follow to perform automatic classification of sounds of interest. These steps are based on the **MAAD** method.
 
 ## Installation
