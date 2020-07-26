@@ -27,6 +27,35 @@ rois = find_rois_cwt(s, fs,
 
 ![Alt text](Example/Example.png?raw=true "Title")
 
+## Workflow
+
+* [1_detection_and_feature_extraction.ipynb](1_detection_and_feature_extraction.ipynb) Detection of regions of interest and extraction of characteristics from regions of interest. 
+
+
+* [2_data_processing.ipynb](2_data_processing.ipynb) The regions of interest are labeled and the training and test sets are created.
+
+
+* [3_models_training.ipynb](3_models_training.ipynb) Supervised learning models are trained. It's found the hyperparameters of the models: logistic regression, support vector machine, random forest, multilayer perceptron.
+
+
+* [4_data_analysis.ipynb](4_data_analysis.ipynb) Visualize and analyze data.
+
+
+* [5_data_augmentation.ipynb](5_data_augmentation.ipynb) Generate the files with background sound.
+
+
+* [6_data_augmentation_features_extraction.ipynb](6_data_augmentation_features_extraction.ipynb) Extract the characteristics of the augmented data.
+
+
+* [7_data_augmentation_data_processing.ipynb](7_data_augmentation_data_processing.ipynb) The regions of interest of augmented data are labeled and the training and test sets are created.
+
+
+* [8_data_augmentation_models_training.ipynb](8_data_augmentation_models_training.ipynb) Supervised learning models are trained.
+
+
+* [9_data_analysis_data_augmentation.ipynb](9_data_analysis_data_augmentation.ipynb) Visualize and analyze data.
+
+
 ## Author
 
 Developed by **Juan Felipe Latorre Gil**, you can contact me by [email](mailto:jflatorre@unal.edu.co): <jflatorreg@unal.edu.co> or [git](https://github.com/jflatorreg).
